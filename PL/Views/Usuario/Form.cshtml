@@ -1,0 +1,91 @@
+﻿@model ML.Usuario
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .centrar {
+        display: flex;
+        justify-content: center;
+    }
+</style>
+<div class="container text-center">
+    <h2>Formulario para usuarios</h2>
+</div>
+<hr />
+@using (Html.BeginForm("Form","Usuario",FormMethod.Post,new {enctype="multipart/form-data"}))
+{
+
+<div class="container">
+    <div class="row text-center">
+        @Html.HiddenFor(Model => Model.IdUsuario)
+        <label>Rol</label>
+        <div class="centrar">
+            @Html.DropDownListFor(Model => Model.Rol.IdRol, new SelectList(Model.Rol.Roles, "IdRol", "Nombre"), "Selecciona un rol", new { @class = "form-control btn btn-primary" })
+        </div>
+        @Html.LabelFor(Model => Model.Nombre)
+        <div class="centrar">
+            @Html.TextBoxFor(Model => Model.Nombre, new { @class = "form-control", @required = "required" })
+        </div>
+        @Html.LabelFor(Model => Model.ApellidoPaterno)
+        <div class="centrar">
+            @Html.TextBoxFor(Model => Model.ApellidoPaterno, new { @class = "form-control", @required = "required" })
+        </div>
+        @Html.LabelFor(Model => Model.ApellidoMaterno)
+        <div class="centrar">
+            @Html.TextBoxFor(Model => Model.ApellidoMaterno, new { @class = "form-control" })
+        </div>
+        @Html.LabelFor(Model => Model.Email)
+        <div class="centrar">
+            @Html.TextBoxFor(Model => Model.Email, new { @class = "form-control", @required = "required" })
+        </div>
+        @if (Model.IdUsuario != 0)
+        {
+
+            <div class="centrar">
+                @Html.HiddenFor(model => model.Password)
+            </div>
+        }
+        else
+        {
+            @Html.LabelFor(Model => Model.Password)
+            <div class="centrar">
+                @Html.TextBoxFor(model => Model.Password, new { @class = "form-control", @type = "password", @id = "campotexto", @name = "campotexto", @required = "required" })
+            </div>
+            <label>Repite la contraseña:</label>
+            <div class="centrar">
+                <input type="password" id="campotextorepetir" class="form-control" required>
+            </div>
+            <p id="demo"></p>
+
+        }
+    </div>
+    <br />
+    <div class="row text-center">
+        <a href="@Url.Action("GetAll","Usuario")" class="btn btn-danger">Cancelar</a>
+        <input id="btnguardar" type="submit" class="btn btn-success" onclick="Base64();" value="Guardar" disabled="disabled"/>
+    </div>
+</div>
+}
+<script>
+    function Base64() {
+        var campoTexto = document.getElementById("campotexto");
+        var campoPass = campoTexto.value;
+        if (campoPass) {
+            var utf8Bytes = new TextEncoder().encode(campoPass);
+            var base64 = btoa(String.fromCharCode.apply(null, utf8Bytes));
+            campoTexto.value = base64;
+        }
+    }
+    document.getElementById("campotextorepetir").addEventListener('input', function () {
+        let pass = document.getElementById("campotexto").value;
+        let passCheck = this.value;
+        if (pass == passCheck) {
+            $('#btnguardar').removeAttr("disabled");
+        } else {
+            $('#btnguardar').attr('disabled', 'disabled');
+        }
+        document.getElementById("demo").innerHTML = pass === passCheck ? "Coinciden!" : "No coinciden!";
+        
+    });
+</script>

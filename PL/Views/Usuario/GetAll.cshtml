@@ -1,0 +1,49 @@
+﻿@model ML.Usuario
+@{
+    ViewBag.Title = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center">
+    <h2>Lista de Usuarios</h2>
+    <a href="@Url.Action("Form","Usuario")" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Agregar Usuario</a>
+</div>
+<hr />
+@if (Model.Usuarios.Count > 0)
+{
+    <div class="container">
+        <div class="row">
+            <table class="table table-condensed table-hover">
+                <thead style="background:#1d1d1d; color:#a49d9d">
+                    <tr>
+                        <th class="text-center">Actualizar</th>
+                        <th class="text-center">Nombre Completo</th>
+                        <th class="text-center">Email</th>
+                        <th class="text-center">Rol</th>
+                        <th class="text-center">Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (ML.Usuario usuario in Model.Usuarios)
+                    {
+                        <tr class="text-center">
+                            <td><a href="@Url.Action("Form","Usuario", new {IdUsuario=@usuario.IdUsuario})" class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                            <td>@usuario.Nombre @usuario.ApellidoPaterno @usuario.ApellidoMaterno</td>
+                            <td>@usuario.Email</td>
+                            <td>@usuario.Rol.Nombre</td>
+                            <td><a href="@Url.Action("Delete", "Usuario", new {IdUsuario=@usuario.IdUsuario})" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a></td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+}
+else
+{
+<div class="alert alert-warning text-center" role="alert">
+    No hay registros de Usuarios
+</div>
+}
+

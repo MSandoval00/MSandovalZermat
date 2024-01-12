@@ -1,0 +1,132 @@
+﻿@model ML.Venta
+@{
+    ViewBag.Title = "Productos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{ 
+    var IdUsuario = Context.Session["IdUsuario"];
+    var ListaProductos = Context.Session["ListaProductos"];
+}
+<div class="container">
+    <div class="row">
+        <div class="text-center">
+            <h2>Productos seleccionados</h2>
+            <a href="@Url.Action("GetAll","Producto")" class="btn btn-danger"> <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i> Regresar</a>
+        </div>
+    </div>
+</div>
+<br />
+<div class="container">
+    <div class="row">
+        @if (Model.ListaProductos == null || Model.ListaProductos.Count == 0)
+        {
+            <div class="alert alert-warning" role="alert">
+                Aún no tienes productos agregados.
+            </div>
+        }
+        else
+        {
+            using (Html.BeginForm("CompraVenta", "Venta", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            { 
+                @Html.HiddenFor(Model=>IdUsuario)
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success" onclick="showModal();"><i class="fa-solid fa-bag-shopping"></i> Comprar</button>
+                    <br />
+                </div>
+                <hr />
+
+                <table class="table table-condensed" style="background:#8620eb; color:aliceblue;">
+                    <thead>
+                        <tr class="text-center">
+                            <td>Foto</td>
+                            <td>Nombre</td>
+                            <td>Descripcion</td>
+                            <td>Precio</td>
+                            <td>Precio Venta</td>
+                            <td>Piezas a comprar</td>
+                            <td>Eliminar producto</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (ML.Producto producto in Model.ListaProductos)
+                        {
+                            <tr id="fila-@producto.Sku" class="text-center">
+                                <td>
+                                    @if (producto.Imagen == "" || producto.Imagen == null)
+                                    {
+                                        <img class="rounded-circle" src="https://img.freepik.com/vector-premium/perfil-avatar-hombre-icono-redondo_24640-14044.jpg" width="50" height="50" />
+                                    }
+                                    else
+                                    {
+                                        <img class="rounded-circle" src="data:image/*;base64,@producto.Imagen" width="50" height="50" />
+                                    }
+                                </td>
+                                <td>@producto.Nombre</td>
+                                <td>@producto.Descripcion</td>
+                                <td>@producto.Precio</td>
+                                <td class="precio">@producto.Precioventa</td>
+                                <td>
+                                    @producto.Piezas
+                                    <input class="form-control" style="width:50px;height:50px;" type="hidden" id="lblPiezas" name="Piezas" value="@producto.Piezas" />
+                                </td>
+                                <td><button class="btn btn-danger" onclick="eliminarFila(@producto.Sku)"><span class="glyphicon glyphicon-trash"></span></button></td>
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+                <label>Total: $<span id="Total"></span></label>
+                <input class="form-control" id="txtTotal" name="Total" onchange="calcularTotal();" type="hidden"/>
+            }
+        }
+    </div>
+</div>
+<!--Modal-->
+<div class="modal fade" id="BuyCompra" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-center">Paquete en camino</h4>
+            </div>
+            <div class="modal-body text-center">
+                <img style=" border-radius:30px; margin-left: auto; margin-right: auto;" src="https://media1.giphy.com/media/npMzRCRHNOffIvGy0F/200w.gif?cid=82a1493bnsd7wfwvknl0e89jptle548qkxrj3udsn2p0hvjz&ep=v1_gifs_related&rid=200w.gif&ct=g" width="350" height="350" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="hiddenModal();" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        calcularTotal();
+    });
+    function eliminarFila(id) {
+        var fila = document.getElementById("fila-" + id);
+        fila.remove();
+        calcularTotal();
+    }
+    function calcularTotal() {
+        var filas = document.querySelectorAll(".table tbody tr");
+        var total = 0;
+
+        filas.forEach(function (fila) {
+            var precio = parseFloat(fila.querySelector(".precio").textContent);
+            let cantidad = document.getElementById("lblPiezas").value;
+            total += precio * cantidad;
+        });
+        document.getElementById("Total").textContent = total.toFixed(2);
+        document.getElementById("txtTotal").value=total;
+        
+       
+    }
+    function showModal() {
+        $('#BuyCompra').modal('show');
+    }
+    function hiddenModal() {
+        $('#BuyCompra').modal('hide');
+    }
+</script>
+

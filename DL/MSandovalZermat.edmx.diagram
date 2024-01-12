@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="80ef6fec7b7c441b82fb95a4eefcb67a" Name="Diagram1" ZoomLevel="74">
+        <EntityTypeShape EntityType="MSandovalZermatModel.Categoria" Width="1.5" PointX="0.75" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MSandovalZermatModel.Descuento" Width="1.5" PointX="0.75" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MSandovalZermatModel.Producto" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="MSandovalZermatModel.Rol" Width="1.5" PointX="2.75" PointY="5.375" IsExpanded="true" />
+        <AssociationConnector Association="MSandovalZermatModel.FK__Producto__IdCate__276EDEB3" ManuallyRouted="false" />
+        <AssociationConnector Association="MSandovalZermatModel.FK__Producto__IdDesc__286302EC" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="MSandovalZermatModel.Usuario" Width="1.5" PointX="5" PointY="4.875" />
+        <AssociationConnector Association="MSandovalZermatModel.FK__Usuario__IdRol__403A8C7D" />
+        <EntityTypeShape EntityType="MSandovalZermatModel.Venta" Width="1.5" PointX="7.25" PointY="5.125" />
+        <EntityTypeShape EntityType="MSandovalZermatModel.VentaDetalle" Width="1.5" PointX="9.5" PointY="3.125" />
+        <AssociationConnector Association="MSandovalZermatModel.FK__VentaDetall__Sku__5070F446" />
+        <AssociationConnector Association="MSandovalZermatModel.FK__Venta__IdUsuario__4CA06362" />
+        <AssociationConnector Association="MSandovalZermatModel.FK__VentaDeta__IdVen__4F7CD00D" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

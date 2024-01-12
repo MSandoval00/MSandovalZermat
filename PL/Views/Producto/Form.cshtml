@@ -1,0 +1,104 @@
+﻿@model ML.Producto
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .centrar {
+        display: flex;
+        justify-content: center;
+    }
+</style>
+
+<div class="container text-center">
+    <h2>Formulario para productos</h2>
+</div>
+<hr />
+
+@using (Html.BeginForm("Form", "Producto", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="container">
+        <div class="row text-center">
+            @Html.HiddenFor(model => Model.Sku)
+
+            @Html.LabelFor(Model => Model.Nombre)
+            <div class="centrar">
+                @Html.TextBoxFor(Model => Model.Nombre, new { @class = "form-control", @required = "required" })
+            </div>
+            @Html.LabelFor(Model => Model.Descripcion)
+            <div class="centrar">
+                @Html.TextAreaFor(Model => Model.Descripcion, new { @class = "form-control", @required = "required" })
+            </div>
+            @Html.LabelFor(Model => Model.Precio)
+            <div class="centrar">
+                @Html.TextBoxFor(Model => Model.Precio, new { @class = "form-control", @id = "txtPrecio", @oninput = "PrecioVenta();", @required = "required" })
+            </div>
+            <label>Categoría </label>
+            <div class="centrar">
+                @Html.DropDownListFor(Model => Model.Categoria.IdCategoria, new SelectList(Model.Categoria.Categorias, "IdCategoria", "Nombre"), "Selecciona una categoría del producto", new { @class = "form-control btn btn-info", @required = "required" })
+            </div>
+            @Html.LabelFor(Model => Model.Precioventa)
+            <div class="centrar">
+                @Html.TextBoxFor(Model => Model.Precioventa, new { @class = "form-control", @id = "txtPrecioVenta", @readonly = "readonly", @required = "required" })
+            </div>
+            <label>Descuento(%)</label>
+            <div class="centrar">
+                @Html.DropDownListFor(Model => Model.Descuento.IdDescuento, new SelectList(Model.Descuento.Descuentos, "IdDescuento", "Valor"), "Selecciona un descuento para el producto", new { @id = "txtDescuento", @oninput = "PrecioVenta();", @class = "form-control btn btn-info", @required = "required" })
+
+            </div>
+
+            <br />
+            <div class="centrar">
+                @if (Session["ImagenProducto"] == null)
+                {
+                <img id="img" class="rounded-circle" src="https://cdn-icons-png.flaticon.com/512/1312/1312307.png" width="150" height="150" />
+                }
+                else
+                {
+                <img id="img" class="rounded-circle" src="data:image/*;base64,@Session["ImagenProducto"]" width="150" height="150" />
+                }
+                <input id="I" name="Imagen" type="file" class="form-control-static" onchange="ValidarImagen(this), VisualizarImagen(this)" />
+            </div>
+        </div>
+        <br />
+        <div class="row text-center">
+            <a href="@Url.Action("GetAll","Producto")" class="btn btn-danger">Cancelar</a>
+            <input type="submit" class="btn btn-success" value="Guardar" />
+        </div>
+    </div>
+}
+@Scripts.Render("~/bundles/jquery")
+<script>
+    function ValidarImagen() {
+        var extensionesPermitidas = ['jpeg', 'jpg', 'png'];
+        var extensionArchivo = document.getElementById('I').value.split('.').pop().toLowerCase();
+        var isValidFile = false;
+        for (var index in extensionesPermitidas) {
+            if (extensionArchivo === extensionesPermitidas[index]) {
+                isValidFile = true;
+                break;
+            }
+        }
+        if (!isValidFile) {
+            alert('Las extensiones permitidas son : *.' + extensionesPermitidas.join(', *.'));
+            $("#I").val("");
+        }
+        return isValidFile;
+    }
+
+    function VisualizarImagen(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#img').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    function PrecioVenta() {
+        let precioReal = document.getElementById("txtPrecio").value;
+        var descuento = $("#txtDescuento option:selected").text();
+        let PrecioVenta = (precioReal) / (100 - descuento) * 100;
+        document.getElementById("txtPrecioVenta").value = PrecioVenta;
+    }
+</script>
